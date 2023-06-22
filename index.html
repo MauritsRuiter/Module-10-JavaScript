@@ -1,17 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript-Game</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="./assets/js/main.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <title>Golfr</title>
 </head>
+<body onload="init()">
+  <!-- <canvas id="canvas"></canvas> -->
+  <div>
+    <button onclick="StartSlingshot()">Sling shot</button>
+    </div>
+  <div id="areaToRender"></div>
 
-<body>
-    <canvas id=v>
-        <script defer src="/main.js"></script>
+  
+
+  <div class="wrapper-height">
+    <div class="gauge">
+      <div class="slice-colors">
+        <div class="st slice-item"></div>
+        <div class="st slice-item"></div>
+        <div class="st slice-item"></div>
+        <div class="st slice-item"></div>
+        <div class="st slice-item"></div>
+      </div>
+      <div class="needle"></div>
+      <div class="gauge-center">d</div>
+    </div>
+  </div><div class="wrapper-speed">
+    <div class="gauge">
+      <div class="slice-colors">
+        <div class="st slice-item"></div>
+        <div class="st slice-item"></div>
+        <div class="st slice-item"></div>
+        <div class="st slice-item"></div>
+        <div class="st slice-item"></div>
+      </div>
+      <div class="needle"></div>
+      <div class="gauge-center">a</div>
+    </div>
+  </div>
 </body>
-
 </html>
