@@ -9,16 +9,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
     <title>Golfr</title>
 </head>
-<body onload="init()">
+<body>
 
   
-  <div id="areaToRender"></div>
+  <!-- <div id="areaToRender"></div> -->
+  
+  <canvas id="canvas"></canvas>
 
 
 <!-- Code codepen voor de begin knoppen -->
 
 <!-- designed by me... enjoy! -->
-<div class="btn-wrapper" onclick="StartSlingshot()" id="btn">
+<div class="btn-wrapper" id="btn">
   <a class="cta" href="#">
     <span>START</span>
     <span>
@@ -33,10 +35,7 @@
   </a>
 </div>
 
-  <!-- <canvas id="canvas"></canvas> -->
 
-
-  
 
   <div id="speedo-wrapper-angle">
     <div class="gauge">
@@ -72,6 +71,6 @@
 
 
 
-  
+
 </body>
 </html>

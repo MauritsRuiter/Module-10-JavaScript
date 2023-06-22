@@ -9,29 +9,32 @@ body {
   inset: 0;
   align-items: center;
   justify-content: center;
-  /* background-color: #000000;  */
+  background-color: #1d1d1d; 
+  overflow: hidden;
 }
-/* 
+
 canvas {
+  /* display: none; */
   position: absolute;
-  top: 0px;
-  left: 0px;
-  border: 1px solid black;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* border: 1px solid; */
+  border-radius: 20px;
+  background-color: #333;
+  /* width: 800px;
+  height: 500px; */
+  cursor: crosshair;
+}
+
+
+
+/* #areaToRender {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 } */
-
-#btn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-#areaToRender {
-   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
 
 
 
@@ -53,9 +56,18 @@ canvas {
 } */
 
 .btn-wrapper {
+  transition: 0.7s;
   display: flex;
   justify-content: center;
 }
+
+  /* #btn {
+    transition: 3s;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  } */
 
 .cta {
     display: flex;
@@ -63,7 +75,7 @@ canvas {
     text-decoration: none;
     font-family: 'Poppins', sans-serif;
     font-size: 40px;
-    color: white;
+    color: #f1f1f1;
     background: #18cc36;
     transition: 1s;
     box-shadow: 6px 6px 0 #048600;
@@ -154,14 +166,13 @@ path.two {
   --gauge-common-color:        #15222E;
   --gauge-slice-default-color: #000;
   --gauge-first-slice-color:   #18cc36;
-  /* --gauge-second-slice-color:  #9baa1e; */
-  --gauge-third-slice-color:   #fffb1e;
-  /* --gauge-fourth-slice-color:  #e67e22; */
+  --gauge-third-slice-color:   #ffc31e;
   --gauge-fifth-slice-color:   #d41200;
   --color-white:               #fff;
 }
 
 #speedo-wrapper-angle {
+  display: none;
   margin: 0 auto;
   position: absolute;
   top: 95%;
@@ -170,6 +181,7 @@ path.two {
  }
 
  #speedo-wrapper-speed {
+  display: none;
   margin: 0 auto;
   position: absolute;
   top: 95%;
@@ -210,7 +222,7 @@ path.two {
   
   
   #counter-angle, #counter-speed{
-    color: --color-white;
+    color: var(--color-white);
     font-size: 1.5em;
     width: 100%;
     padding: 20px 0 0 0;
@@ -233,8 +245,8 @@ path.two {
   left: 20px;
   transform-origin: 100% 4px;
   box-shadow: 0 2px 2px 1px rgba(0, 0, 0, .38);
-  transition: transform 0.8s;
-  transition-timing-function: cubic-bezier(.65, 1.95, .03, .32);
+  transition: transform 0.5s;
+  /* transition-timing-function: cubic-bezier(.65, 1.95, .03, .32); */
 }
 
 .slice-colors .st {
@@ -268,6 +280,7 @@ path.two {
 /* Input Style */
 
 #s-box-angle{
+  display: none;
   width: 200px;
   text-align: center;
   position: absolute;
@@ -277,6 +290,7 @@ path.two {
 }
 
 #s-box-speed{
+  display: none;
   width: 200px;
   text-align: center;
   position: absolute;

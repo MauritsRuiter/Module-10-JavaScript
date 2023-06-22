@@ -1,139 +1,125 @@
-let Engine = Matter.Engine,
- Render = Matter.Render,
- Runner = Matter.Runner,
- Bodies = Matter.Bodies,
- Composite = Matter.Composite,
- Composites = Matter.Composites,
- Constraint = Matter.Constraint,
- Mouse = Matter.Mouse,
- MouseConstraint = Matter.MouseConstraint,
- Events = Matter.Events;
-
- let engine;
-let render;
-let runner;
-
-function init() {
-    // create an engine
-    engine = Engine.create();
-   
-    // create a renderer
-    render = Render.create({
-    element: document.getElementById("areaToRender"),
-    engine: engine,
-    options: {
-    width: 800,
-    height: 600,
-    pixelRatio: 1,
-    background: '#fafafa',
-    wireframes: false // <-- important
-    }
-    });
-   
-    // run the renderer
-    Render.run(render);
-   
-    // create runner
-    runner = Runner.create();
-   
-    // run the engine
-    Runner.run(runner, engine);
-   }
-
-   let lastClear = "(not given)"
-   function clearWorld(exampleName) {
-    if (lastClear != exampleName) {
-    lastClear = exampleName
-   
-    Matter.Composite.clear(engine.world, false)
-    }
-   }
-
-function StartSlingshot() {
-
-    clearWorld("Slingshot")
-   
-    // add bodies
-    let ground = Bodies.rectangle(395, 600, 815, 50, { isStatic: true });
-    let rockOptions = { density: 0.004 };
-    let rock = Bodies.polygon(170, 450, 8, 20, rockOptions);
-    let anchor = { x: 170, y: 450 };
-    let elastic = Constraint.create({
-    pointA: anchor,
-    bodyB: rock,
-    stiffness: 0.05,
-    render: { strokeStyle: 'gray', lineWidth: 2 }
-    });
-    let ground2 = Bodies.rectangle(610, 250, 200, 20, { isStatic: true });
-   
-    let pyramid = Composites.pyramid(550, 0, 5, 10, 0, 0, function (x, y) {
-    return Bodies.rectangle(x, y, 25, 40);
-    });
-
-    // add mouse control
- let mouse = Mouse.create(render.canvas),
- mouseConstraint = MouseConstraint.create(engine, {
- mouse: mouse,
- constraint: {
- stiffness: 0.2,
- render: {
- visible: false
- }
- }
- });
-
- Events.on(engine, 'afterUpdate', function () {
-    if (mouseConstraint.mouse.button === -1 && (rock.position.x > 190 || rock.position.y < 430)) {
-    rock = Bodies.polygon(170, 450, 7, 20, rockOptions);
-    Composite.add(engine.world, rock);
-    elastic.bodyB = rock;
-    }
-    });
-
-    Composite.add(engine.world, [ground, ground2, pyramid, rock, elastic]);
-    Composite.add(engine.world, mouseConstraint);
-   
-    // keep the mouse in sync with rendering
-    render.mouse = mouse;
-   }
-
 const btn = document.getElementById('btn');
+// var canvas = document.getElementById('canvas');
+const speedoWrapperAngle = document.getElementById('speedo-wrapper-angle');
+const sBoxAngle = document.getElementById('s-box-angle');
+const speedoWrapperSpeed = document.getElementById('speedo-wrapper-speed');
+const sBoxSpeed = document.getElementById('s-box-speed');
 
 btn.addEventListener('click', () => {
   // Hide button when clicked so game doesn't run multiple times at once
   // 👇️ hide button (still takes up space on page)
-  btn.style.display = 'none';
+  btn.style.opacity = '0';
+  setTimeout(function() {
+    btn.style.display = 'none';
+    // canvas.style.display = 'initial';
+    speedoWrapperAngle.style.display = 'initial';
+    sBoxAngle.style.display = 'initial';
+    speedoWrapperSpeed.style.display = 'initial';
+    sBoxSpeed.style.display = 'initial';
+}, 700);
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    function setValue(_val) {
-      document.getElementById('counter-angle').textContent = _val;
-      document.getElementById('arrow-angle').style.transform = 'rotate(' + _val + 'deg)';
-    }   
-    
-    var testParam = document.getElementById('testParamAngle');
-    
-    testParam.addEventListener('change', function() {
-      var value = testParam.value;
-      setValue(value);
-    });
-    
-    testParam.dispatchEvent(new Event('change'));
-  });
+
+// SQL Vertaald naar JavaScript door Chat-GPT
+// Angle Speedometer
+function setValue(angle, speed) {
+  document.getElementById('counter-angle').textContent = Math.round(angle / 180 * 100) + '%';
+  console.log(Math.round(angle / 180 * 100));
+  document.getElementById('arrow-angle').style.transform = 'rotate(' + angle + 'deg)';
+
+  document.getElementById('counter-speed').textContent = Math.round(speed / 180 * 100) +'%';
+  console.log(Math.round(speed / 180 * 100));
+  document.getElementById('arrow-speed').style.transform = 'rotate(' + speed + 'deg)';
+
+  var canvas,
+  ctx,
+  positionX = 0,  
+  positionY = 800,
+  // hieronder de values invullen van de speedometers! hahaaa
+  // velocityY = 36,
+  velocityY = angle / 180 * 100,
+  // velocityX = 70,
+  velocityX = speed / 180 * 100,
+  radius = 8,
+  gravity = 0.16,
+  damping = 0.4,
+  traction = 0.6,
+  paused = false;
   
-  document.addEventListener('DOMContentLoaded', function() {
-    function setValue(_val) {
-      document.getElementById('counter-speed').textContent = _val;
-      document.getElementById('arrow-speed').style.transform = 'rotate(' + _val + 'deg)';
-    }   
-    
-    var testParam = document.getElementById('testParamSpeed');
-    
-    testParam.addEventListener('change', function() {
-      var value = testParam.value;
-      setValue(value);
-    });
-    
-    testParam.dispatchEvent(new Event('change'));
-  });
+
+function init() {
+
+  canvas = document.getElementById("canvas");
+  ctx = canvas.getContext("2d");
   
+  canvas.width = 1600;
+  canvas.height = 800;
+
+  circle();
+}
+
+function circle() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!paused)
+    requestAnimationFrame(circle);
+
+  if (positionX + radius >= canvas.width) {
+    velocityX = -velocityX * damping;
+    positionX = canvas.width - radius;
+  } else if (positionX - radius <= 0) {
+    velocityX = -velocityX * damping;
+    positionX = radius;
+  }
+  if (positionY + radius >= canvas.height) {
+    velocityY = -velocityY * damping;
+    positionY = canvas.height - radius;
+    // traction here
+    velocityX *= traction;
+  } else if (positionY - radius <= 0) {
+    velocityY = -velocityY * damping;
+    positionY = radius;
+  }
+
+  velocityY += gravity; // <--- this is it
+
+  positionX += velocityX;
+  positionY += velocityY;
+
+  ctx.beginPath();
+  ctx.arc(positionX, positionY, radius, 0, 2 * Math.PI, false);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+}
+
+init();
+
+  return {
+    angle: angle,
+    speed: speed
+  };
+}
+
+function updateCanvas(angle, speed) {
+  velocityY = angle / 180 * 100;
+  velocityX = speed / 180 * 100;
+}
+function circle() {
+  updateCanvas(angle, speed);
+}
+
+testParamAngle.addEventListener('change', function() {
+  var angleValue = testParamAngle.value;
+  var speedValue = testParamSpeed.value;
+  var values = setValue(angleValue, speedValue);
+  updateCanvas(values.angle, values.speed);
+});
+
+testParamSpeed.addEventListener('change', function() {
+  var angleValue = testParamAngle.value;
+  var speedValue = testParamSpeed.value;
+  var values = setValue(angleValue, speedValue);
+  updateCanvas(values.angle, values.speed);
+});
+
+// CANVAS GRAVITY CODE
+
