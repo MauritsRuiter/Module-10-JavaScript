@@ -22,8 +22,8 @@ function init() {
     element: document.getElementById("areaToRender"),
     engine: engine,
     options: {
-    width: 2000,
-    height: 900,
+    width: 800,
+    height: 600,
     pixelRatio: 1,
     background: '#fafafa',
     wireframes: false // <-- important
@@ -96,3 +96,44 @@ function StartSlingshot() {
     // keep the mouse in sync with rendering
     render.mouse = mouse;
    }
+
+const btn = document.getElementById('btn');
+
+btn.addEventListener('click', () => {
+  // Hide button when clicked so game doesn't run multiple times at once
+  // 👇️ hide button (still takes up space on page)
+  btn.style.display = 'none';
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    function setValue(_val) {
+      document.getElementById('counter-angle').textContent = _val;
+      document.getElementById('arrow-angle').style.transform = 'rotate(' + _val + 'deg)';
+    }   
+    
+    var testParam = document.getElementById('testParamAngle');
+    
+    testParam.addEventListener('change', function() {
+      var value = testParam.value;
+      setValue(value);
+    });
+    
+    testParam.dispatchEvent(new Event('change'));
+  });
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    function setValue(_val) {
+      document.getElementById('counter-speed').textContent = _val;
+      document.getElementById('arrow-speed').style.transform = 'rotate(' + _val + 'deg)';
+    }   
+    
+    var testParam = document.getElementById('testParamSpeed');
+    
+    testParam.addEventListener('change', function() {
+      var value = testParam.value;
+      setValue(value);
+    });
+    
+    testParam.dispatchEvent(new Event('change'));
+  });
+  
