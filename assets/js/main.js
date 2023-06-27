@@ -1,125 +1,138 @@
-const btn = document.getElementById('btn');
-// var canvas = document.getElementById('canvas');
-const speedoWrapperAngle = document.getElementById('speedo-wrapper-angle');
-const sBoxAngle = document.getElementById('s-box-angle');
-const speedoWrapperSpeed = document.getElementById('speedo-wrapper-speed');
-const sBoxSpeed = document.getElementById('s-box-speed');
+var ctx,
+	cx = 0,
+	cy = 900,
+	vx = 0,
+	vy = 0,
+	radius = 8,
+	gravity = 0.1,
+	damping = 0.4,
+	traction = 0.6,
+	paused = false;
 
-btn.addEventListener('click', () => {
-  // Hide button when clicked so game doesn't run multiple times at once
-  // 👇️ hide button (still takes up space on page)
-  btn.style.opacity = '0';
-  setTimeout(function() {
-    btn.style.display = 'none';
-    // canvas.style.display = 'initial';
-    speedoWrapperAngle.style.display = 'initial';
-    sBoxAngle.style.display = 'initial';
-    speedoWrapperSpeed.style.display = 'initial';
-    sBoxSpeed.style.display = 'initial';
-}, 700);
-});
+var predictionTrail = []; // Array to store the prediction trail positions
 
-
-// SQL Vertaald naar JavaScript door Chat-GPT
-// Angle Speedometer
-function setValue(angle, speed) {
-  document.getElementById('counter-angle').textContent = Math.round(angle / 180 * 100) + '%';
-  console.log(Math.round(angle / 180 * 100));
-  document.getElementById('arrow-angle').style.transform = 'rotate(' + angle + 'deg)';
-
-  document.getElementById('counter-speed').textContent = Math.round(speed / 180 * 100) +'%';
-  console.log(Math.round(speed / 180 * 100));
-  document.getElementById('arrow-speed').style.transform = 'rotate(' + speed + 'deg)';
-
-  var canvas,
-  ctx,
-  positionX = 0,  
-  positionY = 800,
-  // hieronder de values invullen van de speedometers! hahaaa
-  // velocityY = 36,
-  velocityY = angle / 180 * 100,
-  // velocityX = 70,
-  velocityX = speed / 180 * 100,
-  radius = 8,
-  gravity = 0.16,
-  damping = 0.4,
-  traction = 0.6,
-  paused = false;
-  
+var square = {
+	x: 1700,
+	y: 0,
+	width: 100,
+	height: 900,
+	color: 'blue'
+};
 
 function init() {
 
-  canvas = document.getElementById("canvas");
-  ctx = canvas.getContext("2d");
-  
-  canvas.width = 1600;
-  canvas.height = 800;
+	canvas = document.getElementById("canvas");
+	ctx = canvas.getContext("2d");
 
-  circle();
+	canvas.width = 1800;
+	canvas.height = 900;
+
+	circle();
 }
 
 function circle() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (!paused)
-    requestAnimationFrame(circle);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	if (!paused)
+		requestAnimationFrame(circle);
 
-  if (positionX + radius >= canvas.width) {
-    velocityX = -velocityX * damping;
-    positionX = canvas.width - radius;
-  } else if (positionX - radius <= 0) {
-    velocityX = -velocityX * damping;
-    positionX = radius;
-  }
-  if (positionY + radius >= canvas.height) {
-    velocityY = -velocityY * damping;
-    positionY = canvas.height - radius;
-    // traction here
-    velocityX *= traction;
-  } else if (positionY - radius <= 0) {
-    velocityY = -velocityY * damping;
-    positionY = radius;
-  }
+	if (cx + radius >= canvas.width) {
+		vx = -vx * damping;
+		cx = canvas.width - radius;
+	} else if (cx - radius <= 0) {
+		vx = -vx * damping;
+		cx = radius;
+	}
+	if (cy + radius >= canvas.height) {
+		vy = -vy * damping;
+		cy = canvas.height - radius;
+		// traction here
+		vx *= traction;
+	} else if (cy - radius <= 0) {
+		vy = -vy * damping;
+		cy = radius;
+	}
 
-  velocityY += gravity; // <--- this is it
+	vy += gravity; // <--- this is it
 
-  positionX += velocityX;
-  positionY += velocityY;
+	cx += vx;
+	cy += vy;
 
-  ctx.beginPath();
-  ctx.arc(positionX, positionY, radius, 0, 2 * Math.PI, false);
-  ctx.fillStyle = '#fff';
-  ctx.fill();
+	console.log(cx, cy)
+
+	// Store the current position in the prediction trail
+	predictionTrail.push({ x: cx, y: cy });
+
+	// Limit the number of points in the prediction trail to a certain length
+	if (predictionTrail.length > 50) {
+		predictionTrail.shift(); // Remove the oldest point from the trail
+	}
+
+	// Draw the prediction trail
+	ctx.beginPath();
+	for (var i = 0; i < predictionTrail.length; i++) {
+		var point = predictionTrail[i];
+		ctx.lineTo(point.x, point.y);
+	}
+	ctx.strokeStyle = '#ffffff4d';
+	ctx.lineWidth = 5;
+	ctx.stroke();
+
+	// Draw the square
+	ctx.fillStyle = square.color;
+	ctx.fillRect(square.x, square.y, square.width, square.height);
+
+	ctx.beginPath();
+	ctx.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+	ctx.fillStyle = '#fff';
+	ctx.fill();
+
+	if (
+		cx + radius > square.x &&
+		cx - radius < square.x + square.width &&
+		cy + radius > square.y &&
+		cy - radius < square.y + square.height
+	  ) {
+		var overlapLeft = Math.abs((cx + radius) - square.x);
+		var overlapRight = Math.abs((cx - radius) - (square.x + square.width));
+		var overlapTop = Math.abs((cy + radius) - square.y);
+		var overlapBottom = Math.abs((cy - radius) - (square.y + square.height));
+	  
+		var minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+	  
+		if (minOverlap === overlapLeft) {
+		  vx = Math.abs(vx) * -damping; // Reverse and dampen horizontal velocity
+		  cx = square.x - radius - 1;
+		} else if (minOverlap === overlapRight) {
+		  vx = -Math.abs(vx) * -damping; // Reverse and dampen horizontal velocity
+		  cx = square.x + square.width + radius + 1;
+		} else if (minOverlap === overlapTop) {
+		  vy = Math.abs(vy) * -damping; // Reverse and dampen vertical velocity
+		  cy = square.y - radius - 1;
+		  vx *= traction;
+		} else if (minOverlap === overlapBottom) {
+		  vy = -Math.abs(vy) * -damping; // Reverse and dampen vertical velocity
+		  cy = square.y + square.height + radius + 1;
+		  vx *= traction;
+		}
+	  }
 }
 
 init();
 
-  return {
-    angle: angle,
-    speed: speed
-  };
-}
+// fancy/irrelevant mouse grab'n'throw stuff below
+canvas.addEventListener('mousedown', handleMouseDown);
+canvas.addEventListener('mouseup', handleMouseUp);
 
-function updateCanvas(angle, speed) {
-  velocityY = angle / 180 * 100;
-  velocityX = speed / 180 * 100;
-}
-function circle() {
-  updateCanvas(angle, speed);
-}
+function handleMouseDown(e) {
+	cx = e.pageX - canvas.offsetLeft;
+	cy = e.pageY - canvas.offsetTop;
+	vx = vy = 0;
+	paused = true;
+};
 
-testParamAngle.addEventListener('change', function() {
-  var angleValue = testParamAngle.value;
-  var speedValue = testParamSpeed.value;
-  var values = setValue(angleValue, speedValue);
-  updateCanvas(values.angle, values.speed);
-});
-
-testParamSpeed.addEventListener('change', function() {
-  var angleValue = testParamAngle.value;
-  var speedValue = testParamSpeed.value;
-  var values = setValue(angleValue, speedValue);
-  updateCanvas(values.angle, values.speed);
-});
-
-// CANVAS GRAVITY CODE
-
+function handleMouseUp(e) {
+	vx = -(e.pageX - canvas.offsetLeft - cx);
+	vy = -(e.pageY - canvas.offsetTop - cy);
+	paused = false;
+	circle();
+};

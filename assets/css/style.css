@@ -14,17 +14,17 @@ body {
 }
 
 canvas {
-  /* display: none; */
-  position: absolute;
+  display: none;
+  /* position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  /* border: 1px solid; */
-  border-radius: 20px;
+  transform: translate(-50%, -50%); */
+  /* border: 5px solid #7a1010; */
+  border-radius: 15px 15px 15px 15px;
   background-color: #333;
-  /* width: 800px;
-  height: 500px; */
   cursor: crosshair;
+  /* width: 1800px;
+  height: 800px; */
 }
 
 
@@ -44,16 +44,8 @@ canvas {
 
 /* Codepen START BUTTON CSS */
 
-/* * {
-  box-sizing: border-box;
-} */
 
-/* body {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
+
 
 .btn-wrapper {
   transition: 0.7s;
@@ -159,15 +151,15 @@ path.two {
 
 
 
-/* Gauge CSS */
+/* Gauge CSS
 :root {
   --wrapper-card-bg:           rgba(21, 34, 46, .25);
   --gauge-bg:                  #e7e7e7;
   --gauge-common-color:        #15222E;
   --gauge-slice-default-color: #000;
   --gauge-first-slice-color:   #18cc36;
-  --gauge-third-slice-color:   #ffc31e;
-  --gauge-fifth-slice-color:   #d41200;
+  --gauge-second-slice-color:   #ffc31e;
+  --gauge-third-slice-color:   #d41200;
   --color-white:               #fff;
 }
 
@@ -175,17 +167,17 @@ path.two {
   display: none;
   margin: 0 auto;
   position: absolute;
-  top: 95%;
-  left: 35%;
+  top: 6.9%;
+  left: 11.75%;
   transform: translate(-50%, -50%);
- }
+ } 
 
  #speedo-wrapper-speed {
   display: none;
   margin: 0 auto;
   position: absolute;
-  top: 95%;
-  left: 65%;
+  top: 6.9%;
+  left: 88.25%;
   transform: translate(-50%, -50%);
  }
 
@@ -201,7 +193,7 @@ path.two {
   
   /* safari fix
   -webkit-transform-style: flat;
-	-webkit-transform: translateZ(0px); */
+	-webkit-transform: translateZ(0px);
   
   &.min-scaled {
     transform: scale(.5);
@@ -223,7 +215,7 @@ path.two {
   
   #counter-angle, #counter-speed{
     color: var(--color-white);
-    font-size: 1.5em;
+    font-size: 1.1em;
     width: 100%;
     padding: 20px 0 0 0;
     text-align: center;
@@ -246,7 +238,7 @@ path.two {
   transform-origin: 100% 4px;
   box-shadow: 0 2px 2px 1px rgba(0, 0, 0, .38);
   transition: transform 0.5s;
-  /* transition-timing-function: cubic-bezier(.65, 1.95, .03, .32); */
+  /* transition-timing-function: cubic-bezier(.65, 1.95, .03, .32); 
 }
 
 .slice-colors .st {
@@ -263,12 +255,12 @@ path.two {
       transform: rotate(-33deg);
     }
     &:nth-child(2) {
-      background-color: var(--gauge-third-slice-color);
+      background-color: var(--gauge-second-slice-color);
       left: 54px;
       transform: rotate(-33deg);
     }
     &:nth-child(3) {
-      background-color: var(--gauge-fifth-slice-color);
+      background-color: var(--gauge-third-slice-color);
       transform: rotate(33deg);
       transform-origin: bottom left;
       left: 100px;
@@ -277,15 +269,15 @@ path.two {
   }
 }
 
-/* Input Style */
+/* Input Style *
 
 #s-box-angle{
   display: none;
   width: 200px;
   text-align: center;
   position: absolute;
-  top: 98%;
-  left: 22%;
+  top: 15%;
+  left: 13%;
   transform: translate(-50%, -50%);
 }
 
@@ -294,7 +286,7 @@ path.two {
   width: 200px;
   text-align: center;
   position: absolute;
-  top: 98%;
-  left: 78%;
+  top: 15%;
+  left: 90%;
   transform: translate(-50%, -50%);
-}
+} */
