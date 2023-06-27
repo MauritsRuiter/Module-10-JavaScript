@@ -1,6 +1,6 @@
 var ctx,
-	cx = 0,
-	cy = 900,
+	cx = canvas.width / 2, // X-coordinate of the center of the ball
+ 	cy = canvas.height / 2,	// Y-coordinate of the center of the ball
 	vx = 0,
 	vy = 0,
 	radius = 8,
@@ -9,26 +9,50 @@ var ctx,
 	traction = 0.6,
 	paused = false;
 
-var predictionTrail = []; // Array to store the prediction trail positions
+var Trail = []; // Array to store the trail positions
 
 var square = {
-	x: 1700,
-	y: 0,
+	x: 1000,
+	y: 500,
 	width: 100,
-	height: 900,
-	color: 'blue'
+	height: 500,
+	color: 'blue',
 };
 
 function init() {
-
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
 
 	canvas.width = 1800;
 	canvas.height = 900;
 
+	canvas.addEventListener('mousedown', handleMouseDown);
+	canvas.addEventListener('mouseup', handleMouseUp);
+
 	circle();
 }
+
+function handleMouseDown(e) {
+	resetBall(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
+	paused = true;
+};
+
+function handleMouseUp(e) {
+	vx = -(e.pageX - canvas.offsetLeft - cx) / 15;
+	vy = -(e.pageY - canvas.offsetTop - cy) / 15;
+	paused = false;
+	requestAnimationFrame(circle);
+};
+
+function resetBall() {
+	cx = 300;
+	cy = 500;
+	vx = 0;
+	vy = 0;
+	paused = true;
+	
+};
+
 
 function circle() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -57,20 +81,20 @@ function circle() {
 	cx += vx;
 	cy += vy;
 
-	console.log(cx, cy)
+	// console.log(cx, cy);
 
-	// Store the current position in the prediction trail
-	predictionTrail.push({ x: cx, y: cy });
+	// Store the current position in the trail
+	Trail.push({ x: cx, y: cy });
 
-	// Limit the number of points in the prediction trail to a certain length
-	if (predictionTrail.length > 50) {
-		predictionTrail.shift(); // Remove the oldest point from the trail
+	// Limit the number of points in the trail to a certain length
+	if (Trail.length > 10) {
+		Trail.shift(); // Remove the oldest point from the trail
 	}
 
-	// Draw the prediction trail
+	// Draw the trail
 	ctx.beginPath();
-	for (var i = 0; i < predictionTrail.length; i++) {
-		var point = predictionTrail[i];
+	for (var i = 0; i < Trail.length; i++) {
+		var point = Trail[i];
 		ctx.lineTo(point.x, point.y);
 	}
 	ctx.strokeStyle = '#ffffff4d';
@@ -102,37 +126,27 @@ function circle() {
 		if (minOverlap === overlapLeft) {
 		  vx = Math.abs(vx) * -damping; // Reverse and dampen horizontal velocity
 		  cx = square.x - radius - 1;
+		  console.log('leftTouched = true');
+		//   btnStart.style.display = "flex";
+		//   canvas.style.display = 'none';
+		  resetBall();
 		} else if (minOverlap === overlapRight) {
 		  vx = -Math.abs(vx) * -damping; // Reverse and dampen horizontal velocity
 		  cx = square.x + square.width + radius + 1;
+		  console.log('rightTouched = true');
 		} else if (minOverlap === overlapTop) {
 		  vy = Math.abs(vy) * -damping; // Reverse and dampen vertical velocity
 		  cy = square.y - radius - 1;
 		  vx *= traction;
+		  console.log('topTouched = true');
 		} else if (minOverlap === overlapBottom) {
 		  vy = -Math.abs(vy) * -damping; // Reverse and dampen vertical velocity
 		  cy = square.y + square.height + radius + 1;
 		  vx *= traction;
+		  console.log('bottomTouched = true');
 		}
 	  }
 }
 
 init();
 
-// fancy/irrelevant mouse grab'n'throw stuff below
-canvas.addEventListener('mousedown', handleMouseDown);
-canvas.addEventListener('mouseup', handleMouseUp);
-
-function handleMouseDown(e) {
-	cx = e.pageX - canvas.offsetLeft;
-	cy = e.pageY - canvas.offsetTop;
-	vx = vy = 0;
-	paused = true;
-};
-
-function handleMouseUp(e) {
-	vx = -(e.pageX - canvas.offsetLeft - cx);
-	vy = -(e.pageY - canvas.offsetTop - cy);
-	paused = false;
-	circle();
-};
