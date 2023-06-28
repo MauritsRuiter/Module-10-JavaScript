@@ -12,10 +12,10 @@ var ctx,
 var Trail = []; // Array to store the trail positions
 
 var square = {
-	x: 1000,
-	y: 500,
-	width: 100,
-	height: 500,
+	x: Math.floor(Math.random() * 1400) + 1,
+	y: Math.floor(Math.random() * 850) + 1,
+	width: Math.floor(Math.random() * 100) + 5,
+	height: Math.floor(Math.random() * 100) + 5,
 	color: 'blue',
 };
 
@@ -52,7 +52,6 @@ function resetBall() {
 	paused = true;
 	
 };
-
 
 function circle() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -122,28 +121,38 @@ function circle() {
 		var overlapBottom = Math.abs((cy - radius) - (square.y + square.height));
 	  
 		var minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
-	  
+
 		if (minOverlap === overlapLeft) {
 		  vx = Math.abs(vx) * -damping; // Reverse and dampen horizontal velocity
 		  cx = square.x - radius - 1;
 		  console.log('leftTouched = true');
-		//   btnStart.style.display = "flex";
-		//   canvas.style.display = 'none';
+		//   score.style.display = 'none';
 		  resetBall();
+		  document.getElementById("score").innerHTML + 1;
+		  Math.floor(Math.random() * 100) + 1;
 		} else if (minOverlap === overlapRight) {
 		  vx = -Math.abs(vx) * -damping; // Reverse and dampen horizontal velocity
 		  cx = square.x + square.width + radius + 1;
 		  console.log('rightTouched = true');
+		//   score.style.display = 'none';
+		  resetBall();
+		  document.getElementById("score").innerHTML + 1;
 		} else if (minOverlap === overlapTop) {
 		  vy = Math.abs(vy) * -damping; // Reverse and dampen vertical velocity
 		  cy = square.y - radius - 1;
 		  vx *= traction;
 		  console.log('topTouched = true');
+		//   score.style.display = 'none';
+		  resetBall();
+		  document.getElementById("score").innerHTML + 1;
 		} else if (minOverlap === overlapBottom) {
 		  vy = -Math.abs(vy) * -damping; // Reverse and dampen vertical velocity
 		  cy = square.y + square.height + radius + 1;
 		  vx *= traction;
 		  console.log('bottomTouched = true');
+		//   score.style.display = 'none';
+		  resetBall();
+		  document.getElementById("score").innerHTML + 1;
 		}
 	  }
 }
